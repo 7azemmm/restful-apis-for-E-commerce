@@ -1,11 +1,11 @@
 const express=require('express');
 
-const{getCategories}=require('../services/categoryService')
+const{getCategories ,createCategories}=require('../services/categoryService')
 
 const router=express.Router();
 
 
-router.get('/',getCategories);
+router.route('/').get(getCategories).post(createCategories);
 
 
 
