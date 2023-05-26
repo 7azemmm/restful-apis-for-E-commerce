@@ -40,7 +40,8 @@ app.use('/api/v1/categories', categoryRoute);
 
 
 
-const PORT=process.env.PORT || 8000 ;
+const PORT=process.env.PORT  ;
 app.listen(PORT, ()=>{
     console.log(`app is running succefully on port ${PORT} `);
 });
+
