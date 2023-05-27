@@ -19,8 +19,8 @@ exports.getCategories=asyncHandler(async(req,res)=>{
 
 
 //@desc update specific category 
-    //@route  PUT /api/v1/categories/:id    
-    //@access  private
+//@route  PUT /api/v1/categories/:id    
+//@access  private
     exports.updateCategory=asyncHandler(async(req,res)=>{
 
         const {id}=req.params;
