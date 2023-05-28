@@ -24,6 +24,7 @@ const category= new mongoose.Schema({
     
     // change schema to model
     const categoryModel= mongoose.model('categoryModel',category);
+    
 
   //export for category model
 

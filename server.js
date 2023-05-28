@@ -6,8 +6,9 @@ const morgan= require('morgan');
 
 dotenv.config({path:'config.env'});
 
-const dbConection=require('./config/database')
-const categoryRoute=require('./routes/categoryRoute')
+const dbConection=require('./config/database');
+const categoryRoute=require('./routes/categoryRoute');
+const ApiError= require('./utils/apiError');
 
 // connect with db
 
@@ -34,6 +35,34 @@ if (process.env.NODE_ENV === 'development' ){
 // Mount Routes*********************
 
 app.use('/api/v1/categories', categoryRoute);
+
+//if the request with a route that we do not have
+// create error and send it to the global error handler 
+app.all('*',(req,res,next)=>{
+ 
+    //const err= new Error(`this route can not reachable: ${req.originalUrl}`);
+    //next(err.message);
+    next(new ApiError(`this route can not reachable: ${req.originalUrl}`,400));
+
+});
+
+
+// global error handling middleware
+app.use((err,req,res,next)=>{ // middle ware to get any error occured and send it in form of json + error handling middleware
+
+   err.statusCode= err.statusCode || 500;
+   err.status= err.status || 'error';
+
+
+
+  res.status(400).json({
+    status: err.status,
+    error: err,
+    message: err.message,
+    stack: err.stack,
+  });
+
+});
 
 
 

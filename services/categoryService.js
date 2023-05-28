@@ -67,6 +67,10 @@ exports.createCategories= asyncHandler(async(req,res)=>{
     const name=req.body.name;
     // async await 
    /* try{*/
+   // for handling errors I use:
+   // then () catch()
+   // try{} catch {}
+   // asynchandler(async) ==> express error handler 
 
   
     const category= await categoryModel.create({name , slug:slugify(name)});
