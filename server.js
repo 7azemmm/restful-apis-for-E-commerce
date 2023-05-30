@@ -100,9 +100,9 @@ process.on('unhandledRejection',(err)=>
         console.error(`application shutdown....`)
         process.exit(1); // requests to my server during pending so we need to close server then app
 
-    })
+    });
      
-})
+});
 
 
 
