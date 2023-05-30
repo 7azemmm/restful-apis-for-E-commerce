@@ -4,11 +4,16 @@ const dotenv= require('dotenv');
 
 const morgan= require('morgan');
 
+
 dotenv.config({path:'config.env'});
 
 const dbConection=require('./config/database');
 const categoryRoute=require('./routes/categoryRoute');
+
 const ApiError= require('./utils/apiError');
+
+const globalError= require('./middlewares/errorMiddleware');
+
 
 // connect with db
 
@@ -42,15 +47,28 @@ app.all('*',(req,res,next)=>{
  
     //const err= new Error(`this route can not reachable: ${req.originalUrl}`);
     //next(err.message);
-    next(new ApiError(`this route can not reachable: ${req.originalUrl}`,400));
+    next(new ApiError(`can not reach this route : ${req.originalUrl}`,400));
 
 });
 
+app.use(globalError);
 
 // global error handling middleware
-app.use((err,req,res,next)=>{ // middle ware to get any error occured and send it in form of json + error handling middleware
+/*app.use((err,req,res,next)=>{
+    err.statusCode= err.statusCode || 500 ;
+   err.status= err.status || 'error';
 
-   err.statusCode= err.statusCode || 500;
+   res.status(400).json({
+    status: err.status,
+    error: err,
+    message: err.message,
+    stack: err.stack, // where error happens
+  });
+});*/
+
+// middle ware to get any error occured and send it in form of json + error handling middleware
+
+   /*err.statusCode= err.statusCode || 500 ;
    err.status= err.status || 'error';
 
 
@@ -59,18 +77,37 @@ app.use((err,req,res,next)=>{ // middle ware to get any error occured and send i
     status: err.status,
     error: err,
     message: err.message,
-    stack: err.stack,
+    stack: err.stack, // where error happens
   });
 
-});
+});*/
 
-
-
-
-
-
-const PORT=process.env.PORT  ;
-app.listen(PORT, ()=>{
+const PORT=process.env.PORT;
+const server=app.listen(PORT, ()=>{
     console.log(`app is running succefully on port ${PORT} `);
 });
+
+
+
+// listen on any event make an error outside express
+// handle rejection happens outside express that i can catch and handled it 
+
+
+process.on('unhandledRejection',(err)=>
+{
+    console.error(`unHandledRejection error: ${err.name} | ${err.message}`)
+    server.close(()=>{
+        console.error(`application shutdown....`)
+        process.exit(1); // requests to my server during pending so we need to close server then app
+
+    })
+     
+})
+
+
+
+
+
+
+
 

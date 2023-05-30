@@ -1,6 +1,7 @@
 const categoryModel= require('../models/categoryModel');
 const slugify=require('slugify');
 const asyncHandler = require('express-async-handler');
+const ApiError=require('../utils/apiError');
 
 
 // @desc   get list of categories
@@ -21,7 +22,7 @@ exports.getCategories=asyncHandler(async(req,res)=>{
 //@desc update specific category 
 //@route  PUT /api/v1/categories/:id    
 //@access  private
-    exports.updateCategory=asyncHandler(async(req,res)=>{
+    exports.updateCategory=asyncHandler(async(req,res,next)=>{
 
         const {id}=req.params;
         const {name}=req.body;
@@ -32,7 +33,10 @@ exports.getCategories=asyncHandler(async(req,res)=>{
          {new:true}  // to return category after making an update
          );
          if(!category){
-             res.status(404).json({msg:` no category found for this id ${id} `});
+           
+            return next( new ApiError(`no category found for this id: ${id}`,404));
+
+
          }
          res.status(200).json({data:category});
      
@@ -48,13 +52,13 @@ exports.getCategories=asyncHandler(async(req,res)=>{
  //@desc   get specific category by id
  //@route  GET /api/v1/categories/:id
  //@access public
- exports.getCategory=asyncHandler(async(req,res)=>{
+ exports.getCategory=asyncHandler(async(req,res,next)=>{
 
     const{id}=req.params;
     const category=await categoryModel.findById(id);
     if(!category){
        
-        res.status(404).json({msg:`no category found for this id ${id}`});
+       return next( new ApiError(`no category found for this id: ${id}`, 404))
     }
     res.status(200).json({data:category});
  
@@ -96,13 +100,14 @@ exports.createCategories= asyncHandler(async(req,res)=>{
  //@desc delete specific category 
     //@route  DELETE /api/v1/categories/:id    
     //@access  private
-    exports.deleteCategory=asyncHandler(async(req,res)=>{
+    exports.deleteCategory=asyncHandler(async(req,res,next)=>{
 
         const {id}=req.params;
         
         const category= await categoryModel.findByIdAndDelete(id);
         if(!category){
-           res.status(404).json({msg:`no category found for this id ${id}`});
+          // res.status(404).json({msg:`no category found for this id ${id}`});
+           return next( new ApiError(`no category found for this id : ${id}`,404));
         }
         res.status(204).send(); // 204 status code means that no contet as the item deleted succefully
        
