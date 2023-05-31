@@ -16,7 +16,7 @@ slug:{
   lowercase:true,
 },
 
-category:{
+category:{  // works as a forign key refer to the parent category 
     type: mongoose.Schema.ObjectId,
     ref:'categoryModel',
     required:[true," subCategory must be belong to parent category"]
@@ -29,6 +29,6 @@ category:{
     
 {timestamps: true});
 
-const subcategoryModel= mongoose.model('subcategoryModel',subcategory);
+const subCategoryModel= mongoose.model('subCategoryModel',subCategory);
 
-moudule.exports=subcategoryModel;
+module.exports=subCategoryModel;

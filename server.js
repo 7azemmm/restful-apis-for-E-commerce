@@ -8,11 +8,15 @@ const morgan= require('morgan');
 dotenv.config({path:'config.env'});
 
 const dbConection=require('./config/database');
+
 const categoryRoute=require('./routes/categoryRoute');
+
+const subCategoryRoute=require('./routes/subCategoryRoute');
 
 const ApiError= require('./utils/apiError');
 
-const globalError= require('./middlewares/errorMiddleware');
+
+const globalError= require('./middlewares/errormiddleware');
 
 
 // connect with db
@@ -40,6 +44,7 @@ if (process.env.NODE_ENV === 'development' ){
 // Mount Routes*********************
 
 app.use('/api/v1/categories', categoryRoute);
+app.use('/api/v1/subCategories', subCategoryRoute);
 
 //if the request with a route that we do not have
 // create error and send it to the global error handler 
@@ -66,22 +71,7 @@ app.use(globalError);
   });
 });*/
 
-// middle ware to get any error occured and send it in form of json + error handling middleware
-
-   /*err.statusCode= err.statusCode || 500 ;
-   err.status= err.status || 'error';
-
-
-
-  res.status(400).json({
-    status: err.status,
-    error: err,
-    message: err.message,
-    stack: err.stack, // where error happens
-  });
-
-});*/
-
+// eslint-disable-next-line prefer-destructuring
 const PORT=process.env.PORT;
 const server=app.listen(PORT, ()=>{
     console.log(`app is running succefully on port ${PORT} `);

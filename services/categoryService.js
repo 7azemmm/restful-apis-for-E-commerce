@@ -1,6 +1,8 @@
-const categoryModel= require('../models/categoryModel');
-const slugify=require('slugify');
 const asyncHandler = require('express-async-handler');
+const slugify=require('slugify');
+const categoryModel= require('../models/categoryModel');
+
+
 const ApiError=require('../utils/apiError');
 
 
@@ -68,7 +70,7 @@ exports.getCategories=asyncHandler(async(req,res)=>{
 // @route  POST /api/v1/categories
 //@access  private
 exports.createCategories= asyncHandler(async(req,res)=>{
-    const name=req.body.name;
+    const {name}= req.body.name;
     // async await 
    /* try{*/
    // for handling errors I use:
