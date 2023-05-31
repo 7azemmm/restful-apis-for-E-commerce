@@ -13,6 +13,8 @@ const categoryRoute=require('./routes/categoryRoute');
 
 const subCategoryRoute=require('./routes/subCategoryRoute');
 
+const brandRoute=require('./routes/brandRoute');
+
 const ApiError= require('./utils/apiError');
 
 
@@ -45,6 +47,7 @@ if (process.env.NODE_ENV === 'development' ){
 
 app.use('/api/v1/categories', categoryRoute);
 app.use('/api/v1/subCategories', subCategoryRoute);
+app.use('/api/v1/brands', brandRoute);
 
 //if the request with a route that we do not have
 // create error and send it to the global error handler 
