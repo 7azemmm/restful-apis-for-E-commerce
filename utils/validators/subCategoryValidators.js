@@ -1,49 +1,34 @@
-const {check}=require('express-validator');
-const validatorMiddleware=require('../../middlewares/validatorMiddleware');
 
+const { check } = require('express-validator');
+const validatorMiddleware = require('../../middlewares/validatorMiddleware');
 
-exports.getsubCategoryValidator=[
-
-
-    // rules 
-    check('id').notEmpty().withMessage("need a specific id first")
-    .isMongoId().withMessage(`invalid subCategory id format`),
-    // check errors in rules 
-    validatorMiddleware,
-    
+exports.getSubCategoryValidator = [
+  check('id').isMongoId().withMessage('Invalid Subcategory id format'),
+  validatorMiddleware,
 ];
 
-exports.createsubCategoryValidator=[
-
-    check('name').notEmpty()
-    .withMessage('must write a subCategory name')
-    .isString()
-    .withMessage('subCategory name must be a string')
-    .isLength({min:3})
-    .withMessage('subCategory name must be more than 3 characters')
-    .isLength({max:32})
-    .withMessage('subCategory name must be less than 32 characters'),
-    check('category').notEmpty().withMessage('subCategory must be belong to Category')
-    .isMongoId().withMessage(`invalid subCategory id format`),
-
-    validatorMiddleware,
-
+exports.createSubCategoryValidator = [
+  check('name')
+    .notEmpty()
+    .withMessage('SubCategory required')
+    .isLength({ min: 2 })
+    .withMessage('Too short Subcategory name')
+    .isLength({ max: 32 })
+    .withMessage('Too long Subcategory name'),
+  check('category')
+    .notEmpty()
+    .withMessage('subCategory must be belong to category')
+    .isMongoId()
+    .withMessage('Invalid Category id format'),
+  validatorMiddleware,
 ];
 
-
-/*exports.deletesubCategoryValidator=[
-    // rules 
-    check('id').isMongoId().withMessage(`invalid subCategory id format`),
-    // check errors in rules 
-    validatorMiddleware,
-
-    
-
+exports.updateSubCategoryValidator = [
+  check('id').isMongoId().withMessage('Invalid Subcategory id format'),
+  validatorMiddleware,
 ];
-exports.updatesubCategoryValidator=[
-    // rules 
-    check('id').isMongoId().withMessage(`invalid subCategory id format`),
-    // check errors in rules 
-    validatorMiddleware,
 
-];*/
+exports.deleteSubCategoryValidator = [
+  check('id').isMongoId().withMessage('Invalid SubCategory id format'),
+  validatorMiddleware,
+];

@@ -70,30 +70,14 @@ exports.getCategories=asyncHandler(async(req,res)=>{
 // @route  POST /api/v1/categories
 //@access  private
 exports.createCategories= asyncHandler(async(req,res)=>{
-    const {name}= req.body.name;
-    // async await 
-   /* try{*/
-   // for handling errors I use:
-   // then () catch()
-   // try{} catch {}
-   // asynchandler(async) ==> express error handler 
+    const {name}= req.body;
+    
 
   
-    const category= await categoryModel.create({name , slug:slugify(name)});
+    const category= await categoryModel.create({name });
     res.status(201).json({ data: category});
 
-   /* }*/
-    /*catch(err){
-        res.status(400).send(err);
-    }*/
-
-
-   // const category= await categoryModel.create({name});
-   // res.status(201).json({ data: category});
-
-   // .then((category) => res.status(201).json({ data: category}))
-
-  //  .catch((err) => res.status(400).send(err));
+   
 
  
 

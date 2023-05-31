@@ -11,10 +11,7 @@ const category= new mongoose.Schema({
   },
    
     // it changes the space with - and changes upperCase to lowerCase as  A and B => a-and-b in the url 
-  slug:{
-      type:String,  
-      lowercase:true,
-    }
+  
     /*image: String,*/
 
     },{timestamps:true}  // create two fields in this document created at and updated at to help in seeing the newest and oldest categories 

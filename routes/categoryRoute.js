@@ -11,6 +11,9 @@ const{getCategories ,
      deleteCategory}=require('../services/categoryService');
 
 const router=express.Router();
+const subCategoryRoute= require('./subCategoryRoute');
+
+router.use('/:categoryId/subcategories',subCategoryRoute);
 
 
 router.route('/').get(getCategories)
