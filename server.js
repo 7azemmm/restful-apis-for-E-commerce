@@ -55,8 +55,8 @@ app.all('*',(req,res,next)=>{
  
     //const err= new Error(`this route can not reachable: ${req.originalUrl}`);
     //next(err.message);
-    next(new ApiError(`can not reach this route : ${req.originalUrl}`,400));
-
+    next(new ApiError(`can not reach this route : ${req.originalUrl}`, 400));
+    
 });
 
 app.use(globalError);
