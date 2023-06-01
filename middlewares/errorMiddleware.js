@@ -12,7 +12,7 @@
 };*/
 // eslint-disable-next-line arrow-body-style
 const sendErrorForDev = (err, res) => {
-  return res.status(400).json({
+  return res.status(err.statusCode).json({
     status: err.status,
     error: err,
     message: err.message,

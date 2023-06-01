@@ -71,7 +71,7 @@ exports.getProducts=asyncHandler(async(req,res)=>{
 // @desc   create product
 // @route  POST /api/v1/products
 //@access  private
-exports.createProducts= asyncHandler(async(req,res)=>{
+exports.createProduct= asyncHandler(async(req,res)=>{
     req.body.slug=slugify(req.body.title); // slug in the body 
     
 
