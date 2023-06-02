@@ -31,7 +31,7 @@ exports.getCategories=asyncHandler(async(req,res)=>{
      
         const category= await categoryModel.findOneAndUpdate(
          {_id:id},
-         {name},
+         {name:name},
          {new:true}  // to return category after making an update
          );
          if(!category){

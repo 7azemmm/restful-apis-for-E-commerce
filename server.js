@@ -50,8 +50,6 @@ if (process.env.NODE_ENV === 'development' ){
 app.use('/api/v1/categories', categoryRoute);
 app.use('/api/v1/subCategories', subCategoryRoute);
 app.use('/api/v1/brands', brandRoute);
-
-
 app.use('/api/v1/products', productRoute );
 
 //if the request with a route that we do not have

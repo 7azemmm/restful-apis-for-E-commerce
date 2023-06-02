@@ -37,15 +37,13 @@ const productSchema= new mongoose.Schema({
       },
       colors: [String],  // colors array of string as product may have more than color 
   ///images/// 
-
-  // @desc these are the images section for the main images and rest of images 
-      imageCover: { // cover for all images (main images)
+      imageCover: { // cover for all images 
         type: String,
         required: [true, 'Product Image cover is required'], // at least on pic for a product 
       },
-      images: [String], // more than on image for a product => rest of images for the product  
+      images: [String], // more than on image for a product 
 
-   // @desc   refernece section as the product refer to category,brand and subcategory
+
       category: {
         type: mongoose.Schema.ObjectId,
         ref: 'Category',
@@ -65,8 +63,6 @@ const productSchema= new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'Brand',
       },
-
-      // @desc Rating section for the product
 
       ratingsAverage: {  // knowing the quality of product 
         type: Number,

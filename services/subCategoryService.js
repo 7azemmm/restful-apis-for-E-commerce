@@ -38,7 +38,7 @@ exports.createFilterObj = (req, res, next) => {
 // @route   GET /api/v1/subcategories
 // @access  Public
 exports.getSubCategories = asyncHandler(async (req, res) => {
-  const page = req.query.page * 1 || 1;
+  const page = req.query.page * 1 || 1;    
   const limit = req.query.limit * 1 || 5;
   const skip = (page - 1) * limit;
 
