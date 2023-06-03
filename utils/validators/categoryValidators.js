@@ -1,47 +1,39 @@
-const {check}=require('express-validator');
-const validatorMiddleware=require('../../middlewares/validatorMiddleware')
+const slugify = require('slugify');
+const { check, body } = require('express-validator');
+const validatorMiddleware = require('../../middlewares/validatorMiddleware');
 
-
-exports.getCategoryValidator=[
-
-
-    // rules 
-    check('id').isMongoId().withMessage(`invalid category id format`),
-    // check errors in rules 
-    validatorMiddleware,
-    
+exports.getCategoryValidator = [
+  check('id').isMongoId().withMessage('Invalid category id format'),
+  validatorMiddleware,
 ];
 
-exports.createCategoryValidator=[
-
-    check('name').notEmpty()
-    .withMessage('must write a category name')
-    .isString()
-    .withMessage('category name must be a string')
-    .isLength({min:3})
-    .withMessage('category name must be more than 3 characters')
-    .isLength({max:32})
-    .withMessage('category name must be less than 32 characters'),
-    
-
-    validatorMiddleware,
-
+exports.createCategoryValidator = [
+  check('name')
+    .notEmpty()
+    .withMessage('Category required')
+    .isLength({ min: 3 })
+    .withMessage('Too short category name')
+    .isLength({ max: 32 })
+    .withMessage('Too long category name')
+    .custom((val, { req }) => {
+      req.body.slug = slugify(val);
+      return true;
+    }),
+  validatorMiddleware,
 ];
 
-
-exports.deleteCategoryValidator=[
-    // rules 
-    check('id').isMongoId().withMessage(`invalid category id format`),
-    // check errors in rules 
-    validatorMiddleware,
-
-    
-
+exports.updateCategoryValidator = [
+  check('id').isMongoId().withMessage('Invalid category id format'),
+  body('name')
+    .optional()
+    .custom((val, { req }) => {
+      req.body.slug = slugify(val);
+      return true;
+    }),
+  validatorMiddleware,
 ];
-exports.updateCategoryValidator=[
-    // rules 
-    check('id').isMongoId().withMessage(`invalid category id format`),
-    // check errors in rules 
-    validatorMiddleware,
 
+exports.deleteCategoryValidator = [
+  check('id').isMongoId().withMessage('Invalid category id format'),
+  validatorMiddleware,
 ];

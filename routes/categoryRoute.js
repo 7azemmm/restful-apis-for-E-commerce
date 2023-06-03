@@ -19,8 +19,7 @@ router.use('/:categoryId/subcategories',subCategoryRoute);
 
 
 router.route('/').get(getCategories)
-router.route('/').post(uploadBrandImage,
-    resizeImage,createCategoryValidator,createCategories);
+router.route('/').post(uploadBrandImage,resizeImage,createCategoryValidator,createCategories);
 // first add rules then the middleware to catch error then if there is no error in the request it will pass to getCategory Service 
 router.route('/:id').get(getCategoryValidator,getCategory);
 router.route('/:id').put(uploadBrandImage,

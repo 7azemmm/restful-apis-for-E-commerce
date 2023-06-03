@@ -40,7 +40,7 @@ exports.createProductValidator = [
     .isNumeric()
     .withMessage('Product priceAfterDiscount must be a number')
     .toFloat()
-    .custom((value, { req }) => { //checking new price after discount 
+    .custom((value, { req }) => {
       if (req.body.price <= value) {
         throw new Error('priceAfterDiscount must be lower than price');
       }
@@ -61,11 +61,9 @@ exports.createProductValidator = [
     .withMessage('Product must be belong to a category')
     .isMongoId()
     .withMessage('Invalid ID formate')
-    // Validate the categoryId by checking if it exists in the Category collection
     .custom((categoryId) =>
       Category.findById(categoryId).then((category) => {
         if (!category) {
-            // Return a rejected Promise with an error message
           return Promise.reject(
             new Error(`No category for this id: ${categoryId}`)
           );
@@ -78,10 +76,8 @@ exports.createProductValidator = [
     .isMongoId()
     .withMessage('Invalid ID formate')
     .custom((subcategoriesIds) =>
-    // Use SubCategory.find() to find subcategories with ids that exist in the subcategoriesIds array
       SubCategory.find({ _id: { $exists: true, $in: subcategoriesIds } }).then(
         (result) => {
-            // If the number of found subcategories is less than 1 or doesn't match the number of subcategoriesIds
           if (result.length < 1 || result.length !== subcategoriesIds.length) {
             return Promise.reject(new Error(`Invalid subcategories Ids`));
           }
