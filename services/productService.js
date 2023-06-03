@@ -1,103 +1,79 @@
 const asyncHandler = require('express-async-handler');
-const slugify=require('slugify');
-const Product= require('../models/productModel');
+const { v4: uuidv4 } = require('uuid');
+const sharp = require('sharp');
 
+const { uploadMixOfImages } = require('../middlewares/uploadImageMiddleware');
+const factory = require('./handlersFactory');
+const Product = require('../models/productModel');
 
-const ApiError=require('../utils/apiError');
+exports.uploadProductImages = uploadMixOfImages([
+  {
+    name: 'imageCover',
+    maxCount: 1,
+  },
+  {
+    name: 'images',
+    maxCount: 5,
+  },
+]);
 
+exports.resizeProductImages = asyncHandler(async (req, res, next) => {
+  // console.log(req.files);
+  //1- Image processing for imageCover
+  if (req.files.imageCover) {
+    const imageCoverFileName = `product-${uuidv4()}-${Date.now()}-cover.jpeg`;
 
-// @desc   get list of products
-// @route  GET /api/v1/products
-//@access  public
-exports.getProducts=asyncHandler(async(req,res)=>{
-     
-    //pagination
-    const page= req.query.page*1 || 1; // to get the value of the page query parameter from the request URL. If the page query parameter is present in the URL, it will be multiplied by 1 to convert it to a number.
-    const limit=req.query.limit*1 || 5;
-    const skip=(page-1)*limit;
-    const products= await Product.find({}).skip(skip).limit(limit); // attach pagination
-    res.status(200).json({results: products.length,page, data: products});
-    
+    await sharp(req.files.imageCover[0].buffer)
+      .resize(2000, 1333)
+      .toFormat('jpeg')
+      .jpeg({ quality: 95 })
+      .toFile(`uploads/products/${imageCoverFileName}`);
+
+    // Save image into our db
+    req.body.imageCover = imageCoverFileName;
+  }
+  //2- Image processing for images
+  if (req.files.images) {
+    req.body.images = [];
+    await Promise.all(
+      req.files.images.map(async (img, index) => {
+        const imageName = `product-${uuidv4()}-${Date.now()}-${index + 1}.jpeg`;
+
+        await sharp(img.buffer)
+          .resize(2000, 1333)
+          .toFormat('jpeg')
+          .jpeg({ quality: 95 })
+          .toFile(`uploads/products/${imageName}`);
+
+        // Save image into our db
+        req.body.images.push(imageName);
+      })
+    );
+
+    next();
+  }
 });
 
- //@desc   get specific product by id
- //@route  GET /api/v1/products/:id
- //@access public
- exports.getProduct=asyncHandler(async(req,res,next)=>{
+// @desc    Get list of products
+// @route   GET /api/v1/products
+// @access  Public
+exports.getProducts = factory.getAll(Product, 'Products');
 
-    const{id}=req.params;
-    const product=await Product.findById(id);
-    if(!product){
-       
-       return next( new ApiError(`no product found for this id: ${id}`, 404))
-    }
-    res.status(200).json({data:product});
- 
- });
+// @desc    Get specific product by id
+// @route   GET /api/v1/products/:id
+// @access  Public
+exports.getProduct = factory.getOne(Product);
 
+// @desc    Create product
+// @route   POST  /api/v1/products
+// @access  Private
+exports.createProduct = factory.createOne(Product);
+// @desc    Update specific product
+// @route   PUT /api/v1/products/:id
+// @access  Private
+exports.updateProduct = factory.updateOne(Product);
 
-//@desc update specific  product
-//@route  PUT /api/v1/products/:id    
-//@access  private
-    exports.updateProduct=asyncHandler(async(req,res,next)=>{
-
-        const {id}=req.params;
-        req.body.slug=slugify(req.body.title);
-     
-        const product= await Product.findOneAndUpdate(
-         {_id:id},
-         req.body,
-         {new:true}  // to return product after making an update
-         );
-         if(!product){
-           
-            return next( new ApiError(`no product found for this id: ${id}`,404));
-
-
-         }
-         res.status(200).json({data:product});
-     
-     
-     
-     
-         });
-
-
-
-
-
-
-
-// @desc   create product
-// @route  POST /api/v1/products
-//@access  private
-exports.createProduct= asyncHandler(async(req,res)=>{
-    req.body.slug=slugify(req.body.title); // slug in the body 
-    
-
-  
-    const product= await Product.create(req.body);  //req.body is an object 
-    res.status(201).json({ data: product});
-
-   
-
- 
-
-});
-
-//@desc delete specific product
-//@route  DELETE /api/v1/products/:id    
-//@access  private
-    exports.deleteProduct=asyncHandler(async(req,res,next)=>{
-
-        const {id}=req.params;
-        
-        const product= await Product.findByIdAndDelete(id);
-        if(!product){
-          // res.status(404).json({msg:`no product found for this id ${id}`});
-           return next( new ApiError(`no product found for this id : ${id}`,404));
-        }
-        res.status(204).send(); // 204 status code means that no contet as the item deleted succefully
-       
-       
-       });
+// @desc    Delete specific product
+// @route   DELETE /api/v1/products/:id
+// @access  Private
+exports.deleteProduct = factory.deleteOne(Product);

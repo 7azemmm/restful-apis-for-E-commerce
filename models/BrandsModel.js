@@ -1,7 +1,7 @@
 
 const mongoose=require('mongoose');
 //create schema
-const Brands= new mongoose.Schema({
+const brandSchema= new mongoose.Schema({
     name:{
       type: String,
       required: true,
@@ -20,8 +20,24 @@ const Brands= new mongoose.Schema({
     },{timestamps:true} 
     );
     
+
+    const setImageURL = (doc) => {
+      if (doc.image) {
+        const imageUrl = `${process.env.BASE_URL}/brands/${doc.image}`;
+        doc.image = imageUrl;
+      }
+    };
+    // findOne, findAll and update
+    brandSchema.post('init', (doc) => {
+      setImageURL(doc);
+    });
+    
+    // create
+    brandSchema.post('save', (doc) => {
+      setImageURL(doc);
+    });
     // change schema to model
-    const BrandsModel= mongoose.model('BrandsModel',Brands);
+    const BrandsModel= mongoose.model('BrandsModel',brandSchema);
     
 
   //export for Brands model
