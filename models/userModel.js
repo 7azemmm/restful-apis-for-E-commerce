@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+const bcrypt =require('bcryptjs');
 
 const userSchema = new mongoose.Schema(
   {
@@ -43,7 +44,12 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+userSchema.pre('save', async function(next){
+if(!this.isModified('password')) return next(); // if this password does not occur any change as no pasword send from request so  do not enter the encryption process
+this.password=await bcrypt.hash(this.password,12);  // as this function returns a promise we use async await 
 
+next();
+});
 
 const User = mongoose.model('User', userSchema);
 
